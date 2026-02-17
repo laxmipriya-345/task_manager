@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<button onclick="toggleDarkMode()" id="darkBtn">🌙 Dark Mode</button>
+<div class="container">
+    <h1>📝 My Task Manager</h1>
+
+    <form action="/add" method="POST">
+        <input type="text" name="task" placeholder="Enter task" required>
+        <button type="submit">➕ Add Task</button>
+    </form>
+<ul id="taskList"></ul>
+    <ul>
+    {% for task in tasks %}
+    <li>
+        <a href="/toggle/{{ task[0] }}">
+        {% if task[2] == 1 %}
+            <span class="done">✅ {{ task[1] }}</span>
+        {% else %}
+            <span>🕒 {{ task[1] }}</span>
+        {% endif %}
+        </a>
+
+        <span class="{% if task[2] == 1 %}done{% endif %}">
+            {{ task[1] }}
+        </span>
+
+        <a href="/delete/{{ task[0] }}">🗑️</a>
+    </li>
+    {% endfor %}
+</ul>
+
+</div>
+<script>
+function toggleDarkMode() {
+    document.body.classList.toggle("dark");
+}
+</script>
+<li class="task">
+    <input type="checkbox" onclick="completeTask(this)">
+    {{ task }}
+</li>
+<script>
+function completeTask(checkbox) {
+    checkbox.parentElement.classList.toggle("completed");
+}
+</script>
+<script>
+let dragged;
+
+document.addEventListener("dragstart", e => {
+    dragged = e.target;
+});
+
+document.addEventListener("dragover", e => {
+    e.preventDefault();
+});
+
+document.addEventListener("drop", e => {
+    if (e.target.className === "task") {
+        e.target.parentNode.insertBefore(dragged, e.target);
+    }
+});
+</script>
+</body>
+</html>
